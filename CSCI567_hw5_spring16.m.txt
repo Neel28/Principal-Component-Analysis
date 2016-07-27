@@ -1,0 +1,2 @@
+ [normTrain,normTest,sorted_eigenvec,sorted_eigenval,train_res,test_res] = main5()
+

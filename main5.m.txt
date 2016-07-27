@@ -1,0 +1,86 @@
+function [normTrain,normTest,sorted_eigenvec,sorted_eigenval,train_res,test_res] = main5()
+
+load x_train
+load x_test
+load y_train
+load y_test
+
+[normTrain,mu,sorted_eigenvec,sorted_eigenval] = get_sorted_eigenvecs(x_train);
+
+%
+% plot for part b
+figure
+for i=1:8
+    subplot(2,4,i)
+    imshow(double(reshape(sorted_eigenvec(:,i), 16, 16)),[]);
+    hold on
+end
+%}
+%
+% plotting top 8 eigendigits
+figure
+digit=[250,300,450,500,3000];
+k=[1,3,5,15,100];
+pl=1;
+for i=1:length(digit)
+    subplot(5,6,pl)
+    pl=pl+1;
+    imshow(double(reshape(x_train(digit(1,i),:), 16, 16)),[]);
+    hold on
+    for j=1:length(k)
+        recX=project(normTrain(digit(1,i),:),sorted_eigenvec,k(1,j));
+        
+        subplot(5,6,pl)
+        imshow(double(reshape(recX, 16, 16)),[]);
+        hold on
+        pl=pl+1;
+    end
+end
+
+%}
+%
+%part d
+%scaling test data
+k=[1,3,5,15,100];
+normTest = bsxfun(@minus, x_test, mu);
+train_res=zeros(5,2);
+test_res=zeros(5,2);
+for j=1:length(k)
+    
+    %preparing compressed train data
+    ctrain=project(normTrain,sorted_eigenvec,k(1,j));
+    %preparing decision tree model and calculating accuracy
+    tree = ClassificationTree.fit(ctrain,y_train,'SplitCriterion', 'deviance');
+    tic
+    accu = predict(tree,ctrain);
+    t=toc;
+    train_res(j,1)=sum(bsxfun(@eq,accu,y_train))*100/length(y_train);
+    train_res(j,2)=t;
+    
+    ctest=project(normTest,sorted_eigenvec,k(1,j));
+    tic
+    accu=predict(tree,ctest);
+    t=toc;
+    test_res(j,1)=sum(bsxfun(@eq,accu,y_test))*100/length(y_test);
+    test_res(j,2)=t;
+    
+end
+disp('Training Accuracy : ')
+train_res
+
+disp('test Accuracy : ')
+test_res
+end
+
+%}
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,19 @@
+function [evec,eval]=pca(x);
+
+    [m n]=size(x);
+    evec=zeros(n);
+    eval=zeros(n);
+    
+    sigma=(x'*x)/(m-1);
+    %
+    [evec,eval]=eig(sigma);
+    
+    eval=diag(eval);
+    eval=eval(end:-1:1);
+    evec=evec(:,end:-1:1);
+    
+    %}
+    %{
+    [evec,eval,z]=svd(sigma);
+    %}
+end

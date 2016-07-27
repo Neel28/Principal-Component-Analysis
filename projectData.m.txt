@@ -1,0 +1,5 @@
+function res=projectData(d,v,k)
+    res=zeros(size(d,1),k);
+    red = v(:, 1:k);
+    res = d * red;
+end

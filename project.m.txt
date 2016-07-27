@@ -1,0 +1,8 @@
+function recX = project(d,sorted_eigenvec,k)
+    % projecting data to top k eigen vectors
+        res = projectData(d,sorted_eigenvec,k);
+        %projecting k to original space
+        recX=zeros(size(res,1),size(sorted_eigenvec,1));
+        k_comp = sorted_eigenvec(:, 1:k);
+        recX = res * k_comp';
+end
